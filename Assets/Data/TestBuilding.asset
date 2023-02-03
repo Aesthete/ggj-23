@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: TestBuilding
   m_EditorClassIdentifier: 
   cost: 
-  consumerData: {fileID: 0}
+  consumerData: {fileID: 11400000, guid: ec7b8fcad08dc48c384511fd4e772532, type: 2}
