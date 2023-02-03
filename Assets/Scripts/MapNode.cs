@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class MapNode : MonoBehaviour
 {
+    public List<int> siblingIndices = new List<int>();
     public List<MapNode> siblings = new List<MapNode>();
+    public int nodeId;
 
     // Start is called before the first frame update
     void Start()
