@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class MapNode : MonoBehaviour
 {
-    [HideInInspector]
     public List<int> siblingIndices = new List<int>();
-    [HideInInspector]
     public List<MapNode> siblings = new List<MapNode>();
-    [HideInInspector]
     public int nodeId;
     public bool locked = true;
+
 
     // Start is called before the first frame update
     void Start()

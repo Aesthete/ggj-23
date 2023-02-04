@@ -10,9 +10,8 @@ public class Map : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
-        
-    }
+	{ 
+	}
 
     // Update is called once per frame
     void Update()
@@ -23,7 +22,7 @@ public class Map : MonoBehaviour
     public List<MapNode> GetShortestPath(MapNode start, MapNode end)
     {
         List<MapNode> path = new List<MapNode>();
-        path.Add(start);
+        //path.Add(start);
 
 
         List<MapNode> unvisited = new List<MapNode>();

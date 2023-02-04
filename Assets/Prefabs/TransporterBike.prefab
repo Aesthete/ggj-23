@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 5014379524033222464}
   - component: {fileID: 704234498199872203}
   m_Layer: 0
-  m_Name: Transporter
+  m_Name: TransporterBike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

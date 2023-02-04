@@ -25,7 +25,6 @@ public class MapTool : EditorWindow
         if (GUILayout.Button("Create Links"))
             link();
 
-        mapData = GUILayout.TextArea(mapData);
         mapNodePrefab = EditorGUILayout.ObjectField("Map node Prefab", mapNodePrefab, typeof(GameObject), false) as GameObject;
         mapParent = EditorGUILayout.ObjectField("Map Root Prefab", mapParent, typeof(GameObject), false) as GameObject;
         if (GUILayout.Button("Generate Map"))
@@ -36,6 +35,7 @@ public class MapTool : EditorWindow
             p.name = "Map Parent";
             generateMap(p, mapData);
         }
+        mapData = GUILayout.TextArea(mapData);
 
         if (GUILayout.Button("Group Nodes"))
         {
@@ -64,7 +64,10 @@ public class MapTool : EditorWindow
             Map map = FindObjectOfType<Map>();
             List<MapNode> path = map.GetShortestPath(nodes[0], nodes[1]);
 
-            Debug.Log(string.Join(" - ", path.Select(x => x.nodeId)));      
+            Debug.Log(string.Join(" - ", path.Select(x => x.nodeId)));
+
+            Transporter t = FindObjectOfType<Transporter>();
+            t.MoveTransportOnPath(path);
         }
     }
 
