@@ -20,6 +20,7 @@ while not nx.is_planar(G):
             G.add_edge(edge[0], edge[1])
 A = nx.adjacency_matrix(G)
 A = A.todense()
+print(type(A))
 
 '''with open('fixed_example.pkl', 'wb') as f:
     pickle.dump(A, f)
