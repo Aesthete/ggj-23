@@ -47,21 +47,29 @@ def pos_scaled(pos: dict) -> dict:
 def make_planar_treelike(n: int, m: int, attempts: int=100) -> Union[bool,np.ndarray]:
     G = nx.random_tree(n)
     nodes = list(G.nodes())
-    for x in range(m):
-        edge = random.choices(nodes, k=2)
-        if edge[0] != edge[1]:
-            G.add_edge(edge[0], edge[1])
-    i = 1
-    while not nx.is_planar(G) and i<attempts:
-        G = nx.random_tree(n)
-        nodes = list(G.nodes())
-        for x in range(m):
+    i=1
+    for x in range(attempts):
+        if i<m:
             edge = random.choices(nodes, k=2)
             if edge[0] != edge[1]:
                 G.add_edge(edge[0], edge[1])
-        i+=1
-    if i==attempts:
-        return False
+                if not nx.is_planar(G):
+                    G.remove_edge(edge[0], edge[1])
+                else:
+                    i+=1
+        else:
+            break
+    #i = 1
+    #while not nx.is_planar(G) and i<attempts:
+    #    G = nx.random_tree(n)
+    #    nodes = list(G.nodes())
+    #    for x in range(m):
+    #        edge = random.choices(nodes, k=2)
+    #        if edge[0] != edge[1]:
+    #            G.add_edge(edge[0], edge[1])
+    #    i+=1
+    #if i==attempts:
+    #    return False
     A = nx.adjacency_matrix(G)
     A = A.todense()
     return A

@@ -1,7 +1,7 @@
 from functions import *
 import matplotlib.pyplot as plt
 
-A = make_planar_treelike(100,15)
+A = make_planar_treelike(75,45, attempts=500)
 
 if isinstance(A,np.ndarray):
     edges, pos = planarizing_embedding_from_matrix(A)
