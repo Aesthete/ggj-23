@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
+using System.Collections.Generic;
+using System.Collections;
 
 public class MapTool : EditorWindow
 {
@@ -19,12 +21,10 @@ public class MapTool : EditorWindow
     void OnGUI()
     {
         GUILayout.Label("Map Tool", EditorStyles.boldLabel);
-        GameObject[] objs = Selection.objects as GameObject[];
 
         if (GUILayout.Button("Create Links"))
             link();
 
-        mapData = GUILayout.TextArea(mapData);
         mapNodePrefab = EditorGUILayout.ObjectField("Map node Prefab", mapNodePrefab, typeof(GameObject), false) as GameObject;
         mapParent = EditorGUILayout.ObjectField("Map Root Prefab", mapParent, typeof(GameObject), false) as GameObject;
         if (GUILayout.Button("Generate Map"))
@@ -34,6 +34,40 @@ public class MapTool : EditorWindow
             GameObject p = Instantiate(mapParent);
             p.name = "Map Parent";
             generateMap(p, mapData);
+        }
+        mapData = GUILayout.TextArea(mapData);
+
+        if (GUILayout.Button("Group Nodes"))
+        {
+            Object[] objs = Selection.objects;
+            if (objs.Length < 1)
+                return;
+            MapNode[] nodes = new MapNode[2];
+            foreach (GameObject obj in objs)
+            {
+                if (obj.GetComponent<MapNode>() == null)
+                {
+                    return;
+                }
+            }
+        }
+
+        if (GUILayout.Button("Print Path"))
+        {
+            Object[] objs = Selection.objects;
+            if (objs.Length != 2)
+                return;
+            MapNode[] nodes = new MapNode[2];
+            nodes[0] = (objs[0] as GameObject).GetComponent<MapNode>();
+            nodes[1] = (objs[1] as GameObject).GetComponent<MapNode>();
+
+            Map map = FindObjectOfType<Map>();
+            List<MapNode> path = map.GetShortestPath(nodes[0], nodes[1]);
+
+            Debug.Log(string.Join(" - ", path.Select(x => x.nodeId)));
+
+            Transporter t = FindObjectOfType<Transporter>();
+            t.MoveTransportOnPath(path);
         }
     }
 
@@ -45,11 +79,12 @@ public class MapTool : EditorWindow
             string line = lines[i];
             GameObject go = Instantiate(mapNodePrefab);
             go.transform.parent = parent.transform;
+            parent.GetComponent<Map>().mapNodes.Add(go.GetComponent<MapNode>());
             MapNode mapNode = go.GetComponent<MapNode>();
             mapNode.nodeId = i;
-            string[] lineData = line.Trim().Split(",");
-            float x = float.Parse(lineData[0]);
-            float y = float.Parse(lineData[1]);
+            string[] lineData = line.Split(' ')[0].Trim().Split(",");
+            float x = float.Parse(lineData[0]) - 0.5f;
+            float y = float.Parse(lineData[1]) - 0.5f;
             go.transform.position = new Vector3(x * 20, y * 20, 0);
             for (int ii = 2; ii < lineData.Length; ii++)
             {

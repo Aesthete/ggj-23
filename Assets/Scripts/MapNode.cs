@@ -7,6 +7,8 @@ public class MapNode : MonoBehaviour
     public List<int> siblingIndices = new List<int>();
     public List<MapNode> siblings = new List<MapNode>();
     public int nodeId;
+    public bool locked = true;
+
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +34,12 @@ public class MapNode : MonoBehaviour
                 transform.position,
                 node.transform.position
             );
+        }
+
+        if (locked)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawIcon(transform.position, "lock.jpeg", true);
         }
 #endif
     }
