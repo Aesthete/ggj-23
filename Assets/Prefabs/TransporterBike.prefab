@@ -130,9 +130,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
-  origin: {fileID: 0}
-  destination: {fileID: 0}
+  map: {fileID: 0}
   transporterName: Bike
-  nodesTravelledPerDay: 10
+  segmentsTravelledPerDay: 50
   holdCapacity: 1
   weightCapacity: 1

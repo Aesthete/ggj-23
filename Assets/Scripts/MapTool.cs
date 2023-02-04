@@ -69,6 +69,17 @@ public class MapTool : EditorWindow
             Transporter t = FindObjectOfType<Transporter>();
             t.MoveTransportOnPath(path);
         }
+
+        if (GUILayout.Button("Set New Target"))
+        {
+            GameObject obj = Selection.activeGameObject;
+            MapNode comp = obj.GetComponent<MapNode>();
+
+            foreach (Transporter tp in FindObjectsOfType<Transporter>())
+            {
+                tp.DeliverTo(comp);
+            }
+        }
     }
 
     void generateMap(GameObject parent, string data)
@@ -77,16 +88,17 @@ public class MapTool : EditorWindow
         for (int i = 0; i < lines.Length; i++)
         {
             string line = lines[i];
-            GameObject go = Instantiate(mapNodePrefab);
+            GameObject go = PrefabUtility.InstantiatePrefab(mapNodePrefab) as GameObject;
             go.transform.parent = parent.transform;
             parent.GetComponent<Map>().mapNodes.Add(go.GetComponent<MapNode>());
             MapNode mapNode = go.GetComponent<MapNode>();
-            mapNode.nodeId = i;
             string[] lineData = line.Split(' ')[0].Trim().Split(",");
-            float x = float.Parse(lineData[0]) - 0.5f;
-            float y = float.Parse(lineData[1]) - 0.5f;
-            go.transform.position = new Vector3(x * 20, y * 20, 0);
-            for (int ii = 2; ii < lineData.Length; ii++)
+            int id = int.Parse(lineData[0]);
+            mapNode.nodeId = id;
+            float x = float.Parse(lineData[1]) - 0.5f;
+            float y = float.Parse(lineData[2]) - 0.5f;
+            go.transform.position = new Vector3(x * (float)Globals.MapScale, y * (float)Globals.MapScale, 0);
+            for (int ii = 3; ii < lineData.Length; ii++)
             {
                 int sibling = int.Parse(lineData[ii]);
                 mapNode.siblingIndices.Add(sibling);

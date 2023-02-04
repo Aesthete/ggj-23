@@ -6,14 +6,14 @@ using System.Linq;
 public class Transporter : MonoBehaviour
 {
     public Producer parent;
-    public Building destination;
 
     private List<MapNode> path = new List<MapNode>();
     MapNode currentLocation;
-    Map map;
+    MapNode currentDestination;
+    public Map map;
 
     public string transporterName;
-    public uint nodesTravelledPerDay;
+    public uint segmentsTravelledPerDay;
     public uint holdCapacity;
     public uint weightCapacity;
 
@@ -33,11 +33,21 @@ public class Transporter : MonoBehaviour
 
     }
 
-    void OnDestinationReached(List<MapNode> path)
+    void OnDestinationReached()
     {
         Debug.Log("Reached!");
-        int idx = Random.Range(0, map.mapNodes.Count - 1);
-        path = map.GetShortestPath(currentLocation, map.mapNodes[idx]);
+        currentDestination = this.path.First();
+        this.path = map.GetShortestPath(currentLocation, currentDestination);
+        MoveTransportOnPath(path);
+    }
+
+    public void DeliverTo(MapNode target, MapNode forceStartFrom = null)
+    {
+        currentDestination = target;
+
+        if (forceStartFrom != null)
+            currentLocation = forceStartFrom;
+        List<MapNode> path = map.GetShortestPath(currentLocation, currentDestination);
         MoveTransportOnPath(path);
     }
 
@@ -49,20 +59,23 @@ public class Transporter : MonoBehaviour
 
     IEnumerator MoveOnPath(List<MapNode> path)
     {
-        float secondsPerNode = Globals.SecondsInDay / (float)nodesTravelledPerDay;
+        this.path = path;
         currentLocation = path[0];
         transform.position = currentLocation.transform.position;
 
         foreach (MapNode node in path.Skip(1))
         {
-            yield return StartCoroutine(MoveFromTo(currentLocation, node, secondsPerNode));
+            uint segments = Util.GetSegmentsBetweenNodes(currentLocation, node);
+            float secondsPerSegment = (Globals.SecondsInDay / segmentsTravelledPerDay);
+            float time = segments * secondsPerSegment;
+            yield return StartCoroutine(MoveFromTo(currentLocation, node, time));
         }
-        OnDestinationReached(path);
+        OnDestinationReached();
     }
 
-    IEnumerator MoveFromTo(MapNode a, MapNode b, float secondsTotal)
+    IEnumerator MoveFromTo(MapNode a, MapNode b, float timeTaken)
     {
-        float step = (secondsTotal * (a.transform.position - b.transform.position).magnitude) * Time.fixedDeltaTime;
+        float step = (Time.fixedDeltaTime / timeTaken);
         float t = 0;
         while (t <= 1.0f)
         {

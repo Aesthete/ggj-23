@@ -49,6 +49,7 @@ MonoBehaviour:
   siblings: []
   nodeId: 0
   locked: 1
+  startNode: 0
 --- !u!1 &5261261869215533820
 GameObject:
   m_ObjectHideFlags: 0

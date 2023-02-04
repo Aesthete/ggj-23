@@ -130,9 +130,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
-  origin: {fileID: 0}
-  destination: {fileID: 0}
-  transporterPrefab: {fileID: 0}
   transporterName: Truck
   nodesTravelledPerDay: 10
   holdCapacity: 1

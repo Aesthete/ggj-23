@@ -6,38 +6,39 @@ using UnityEngine;
 public class Map : MonoBehaviour
 {
 
-    public List<MapNode> mapNodes;
+	public List<MapNode> mapNodes;
 
-    // Start is called before the first frame update
-    void Start()
-	{ 
+	// Start is called before the first frame update
+	void Start()
+	{
 	}
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+	// Update is called once per frame
+	void Update()
+	{
 
-    public List<MapNode> GetShortestPath(MapNode start, MapNode end)
-    {
-        List<MapNode> path = new List<MapNode>();
-        //path.Add(start);
+	}
+
+	public List<MapNode> GetShortestPath(MapNode start, MapNode end)
+	{
+		Debug.Assert(end != null, "Cannot make path to null");
+		List<MapNode> path = new List<MapNode>();
+		//path.Add(start);
 
 
-        List<MapNode> unvisited = new List<MapNode>();
-        Dictionary<MapNode, MapNode> previous = new Dictionary<MapNode, MapNode>();
-        Dictionary<MapNode, int> distances = new Dictionary<MapNode, int>();
+		List<MapNode> unvisited = new List<MapNode>();
+		Dictionary<MapNode, MapNode> previous = new Dictionary<MapNode, MapNode>();
+		Dictionary<MapNode, int> distances = new Dictionary<MapNode, int>();
 
-        foreach (MapNode node in mapNodes)
-        {
-            unvisited.Add(node);
-            distances.Add(node, int.MaxValue);
-        }
+		foreach (MapNode node in mapNodes)
+		{
+			unvisited.Add(node);
+			distances.Add(node, int.MaxValue);
+		}
 
-        distances[start] = 0;
-        while (unvisited.Count != 0)
-        {
+		distances[start] = 0;
+		while (unvisited.Count != 0)
+		{
 			// Ordering the unvisited list by distance, smallest distance at start and largest at end
 			unvisited = unvisited.OrderBy(node => distances[node]).ToList();
 
@@ -86,5 +87,24 @@ public class Map : MonoBehaviour
 			}
 		}
 		return path;
-    }
+	}
+
+	public T FindClosest<T>(MapNode from) where T : Component
+	{
+		T[] search = FindObjectsOfType<T>();
+		(T, int) closest = (null, int.MaxValue);
+		foreach (T cmp in search)
+        {
+
+			int distance = GetShortestPath(from, cmp.GetComponentInParent<MapNode>()).Count;
+			if (distance < closest.Item2)
+            {
+				closest.Item1 = cmp;
+				closest.Item2 = distance;
+            }
+		}
+
+		return closest.Item1;
+	}
+
 }

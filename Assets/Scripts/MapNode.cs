@@ -8,7 +8,7 @@ public class MapNode : MonoBehaviour
     public List<MapNode> siblings = new List<MapNode>();
     public int nodeId;
     public bool locked = true;
-
+    public bool startNode = false;
 
     // Start is called before the first frame update
     void Start()

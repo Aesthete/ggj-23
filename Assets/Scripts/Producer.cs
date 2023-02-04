@@ -27,4 +27,23 @@ public class Producer : MonoBehaviour
     {
 
     }
+
+    public void OnBuild()
+    {
+        AddTransporter(1);
+    }
+
+    private void AddTransporter(int level)
+    {
+        GameObject tpPrefab = FindObjectOfType<GameController>().transporterPrefab;
+        GameObject tp = Instantiate(tpPrefab, this.transform);
+        Transporter transporter = tp.GetComponent<Transporter>();
+
+        transporter.parent = this;
+        Map map = FindObjectOfType<Map>();
+        MapNode ourNode = this.GetComponentInParent<MapNode>();
+        Consumer closest = map.FindClosest<Consumer>(ourNode);
+        transporter.map = map;
+        transporter.DeliverTo(closest.GetComponentInParent<MapNode>(), ourNode);
+    }
 }
