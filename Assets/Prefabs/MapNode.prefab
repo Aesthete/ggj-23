@@ -50,6 +50,8 @@ MonoBehaviour:
   nodeId: 0
   locked: 1
   startNode: 0
+  unlockGroup: 0
+  island: {fileID: 5261261869215533820}
 --- !u!1 &5261261869215533820
 GameObject:
   m_ObjectHideFlags: 0
@@ -61,7 +63,7 @@ GameObject:
   - component: {fileID: 1067820794156784927}
   - component: {fileID: 1776406867507153120}
   m_Layer: 0
-  m_Name: Square
+  m_Name: Island
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,7 +125,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5199c6d09e19048c49f2c1e47c794040, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

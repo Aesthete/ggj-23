@@ -12,12 +12,41 @@ public class GameController : MonoBehaviour
     public GameObject consumerPrefab;
 
     public Map map;
+    public int currentDay = 0;
+    public int currentTick = 0;
+    Coroutine timerCoroutine;
 
     void Start()
     {
         map = FindObjectOfType<Map>();
         ResetGame();
     }
+
+    IEnumerator _timer(uint seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+    }
+
+    void OnTick()
+    {
+        if (timerCoroutine != null) StopCoroutine(timerCoroutine);
+        StartCoroutine(_timer(Globals.SecondsInTick));
+        currentTick++;
+        Debug.Log("Tick!");
+
+        if (currentTick % Globals.TicksInDay == 0)
+        {
+            OnNewDay(currentDay, currentDay+1);
+        }
+        OnTick();
+    }
+
+    void OnNewDay(int currentDay, int newDay)
+    {
+        this.currentDay = newDay;
+        Debug.Log("New day!");
+    }
+
 
     private void ResetGame()
     {
@@ -27,6 +56,10 @@ public class GameController : MonoBehaviour
         }
         placeStartingBuildings();
         placeRandomTestBuildings();
+
+        currentTick = 0;
+        currentDay = 0;
+        //OnTick();
     }
 
     void placeRandomTestBuildings()
@@ -70,6 +103,9 @@ public class GameController : MonoBehaviour
 
         consumer.GetComponent<Consumer>().OnBuild();
         producer.GetComponent<Producer>().OnBuild();
+
+        c.OnBuildBuilding();
+        p.OnBuildBuilding();
     }
 
     // Update is called once per frame

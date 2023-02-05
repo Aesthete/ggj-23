@@ -8,7 +8,10 @@ public class MapTool : EditorWindow
 {
     public GameObject mapParent;
     public GameObject mapNodePrefab;
+    public GameObject BridgePrefab;
     public string mapData;
+
+    public static bool showGroupColors = false;
 
     [MenuItem("GGJ/Map Tool")]
     static void Init()
@@ -80,6 +83,8 @@ public class MapTool : EditorWindow
                 tp.DeliverTo(comp);
             }
         }
+
+        showGroupColors = GUILayout.Toggle(showGroupColors, "Show group colors");
     }
 
     void generateMap(GameObject parent, string data)
@@ -95,6 +100,7 @@ public class MapTool : EditorWindow
             string[] lineData = line.Split(' ')[0].Trim().Split(",");
             int id = int.Parse(lineData[0]);
             mapNode.nodeId = id;
+            mapNode.name = "Node: " + lineData[0];
             float x = float.Parse(lineData[1]) - 0.5f;
             float y = float.Parse(lineData[2]) - 0.5f;
             go.transform.position = new Vector3(x * (float)Globals.MapScale, y * (float)Globals.MapScale, 0);
@@ -113,6 +119,9 @@ public class MapTool : EditorWindow
                     child.siblings.Add(sibling);
             }
         }
+
+        GameObject bridgesRoot = new GameObject("Bridges Root");
+        bridgesRoot.transform.parent = parent.transform;
     }
 
     void link()

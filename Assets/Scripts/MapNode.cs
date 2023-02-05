@@ -10,6 +10,10 @@ public class MapNode : MonoBehaviour
     public bool locked = true;
     public bool startNode = false;
 
+    public int unlockGroup = 0;
+
+    public GameObject island;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +24,12 @@ public class MapNode : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void OnBuildBuilding()
+    {
+        island.SetActive(false);
+
     }
 
     void OnDrawGizmos()
@@ -36,10 +46,24 @@ public class MapNode : MonoBehaviour
             );
         }
 
-        if (locked)
+        if (MapTool.showGroupColors)
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawIcon(transform.position, "lock.jpeg", true);
+            Random.State state = Random.state;
+            Random.InitState(unlockGroup);
+            Color groupColor = Random.ColorHSV(0f, 1f, 1f, 1f, 1f, 1f);
+            Random.state = state;
+
+            if (locked)
+            {
+                Gizmos.color = groupColor;
+                Gizmos.DrawIcon(transform.position, "lock.jpeg", true, groupColor);
+            }
+
+            GetComponentInChildren<SpriteRenderer>().color = groupColor;
+        }
+        else
+        {
+            GetComponentInChildren<SpriteRenderer>().color = Color.white;
         }
 #endif
     }
