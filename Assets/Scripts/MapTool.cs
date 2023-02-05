@@ -30,6 +30,7 @@ public class MapTool : EditorWindow
 
         mapNodePrefab = EditorGUILayout.ObjectField("Map node Prefab", mapNodePrefab, typeof(GameObject), false) as GameObject;
         mapParent = EditorGUILayout.ObjectField("Map Root Prefab", mapParent, typeof(GameObject), false) as GameObject;
+        BridgePrefab = EditorGUILayout.ObjectField("Bridge prefab", BridgePrefab, typeof(GameObject), false) as GameObject;
         if (GUILayout.Button("Generate Map"))
         {
             if (mapParent == null)
@@ -122,6 +123,41 @@ public class MapTool : EditorWindow
 
         GameObject bridgesRoot = new GameObject("Bridges Root");
         bridgesRoot.transform.parent = parent.transform;
+
+        foreach (MapNode child in parent.GetComponentsInChildren<MapNode>())
+        {
+            foreach (MapNode sibling in child.siblings)
+            {
+                buildBridge(child, sibling, bridgesRoot);
+            }
+        }
+    }
+
+    void buildBridge(MapNode a, MapNode b, GameObject bridgesRoot)
+    {
+        GameObject bridge = Instantiate(BridgePrefab);
+        bridge.transform.parent = bridgesRoot.transform;
+        float bridgeSize = bridge.GetComponentInChildren<SpriteRenderer>().bounds.size.magnitude * 0.8f;
+        Vector3 targetDir = b.transform.position - a.transform.position;
+        float dist = targetDir.magnitude;
+        uint numBridges = (uint)Mathf.Ceil(dist / bridgeSize);
+        int bridgesPlaced = 0;
+        float angle = Vector3.SignedAngle(Vector3.up, targetDir, Vector3.forward);
+
+        GameObject sectionParent = new GameObject();
+        sectionParent.transform.parent = bridgesRoot.transform;
+
+        for (int i = 0; i < numBridges; i++)
+        {
+            GameObject bridgePiece = Instantiate(bridge);
+            bridgePiece.transform.parent = sectionParent.transform;
+            bridgePiece.transform.Translate(Vector3.up * bridgesPlaced * bridgeSize, Space.Self);
+            bridgesPlaced++;
+        }
+        sectionParent.transform.position = a.transform.position;
+        sectionParent.transform.Rotate(Vector3.forward, angle);
+
+        DestroyImmediate(bridge);
     }
 
     void link()
